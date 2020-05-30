@@ -49,6 +49,27 @@ def clear_sort_table():
     dbs.clear_sort()
     s_tree.delete(*s_tree.get_children())
 
+
+def filter_maze():
+    if combobox_m.get() == 'All':
+        result = dbs.get_path()
+    else:
+        result = dbs.filter_maze(combobox_m.get())
+    m_tree.delete(*m_tree.get_children())
+    for i in result:
+        m_tree.insert('', 'end', values=tuple(i))
+
+def filter_sort():
+    if combobox_s.get() == 'All':
+        result = dbs.get_sort()
+    else:
+        result = dbs.filter_sort(combobox_s.get())
+    s_tree.delete(*s_tree.get_children())
+    for i in result:
+        s_tree.insert('', 'end', values=tuple(i))
+
+
+
 # tkinter root window, title, and size.
 root = tk.Tk()
 root.title('algorithm visualizer')
@@ -74,11 +95,10 @@ tabs.add(tab2, text='path finding visualizer')
 tabs.pack(expand=1, fill='both')
 
 # list box for the sorting algorithms options
+sorting_alg = ('bubble sort', 'insertion sort', 'quick sort')
 lst_sort = tk.Listbox(tab1, height=2)
 lst_sort.grid(column=0, row=0, sticky='nws', padx=15, pady=15)
-lst_sort.insert(tk.END, *('bubble sort',
-                          'insertion sort',
-                          'quick sort'))
+lst_sort.insert(tk.END, *sorting_alg)
 
 # scale to choose the size with a label
 list_size_l = tk.Label(tab1, text='size')
@@ -118,25 +138,24 @@ clear_sort_h = tk.Button(tab1, text='Clear history', command=clear_sort_table, w
 clear_sort_h.grid(column=0, row=4, pady=10, padx=15)
 
 # listbox to choose the path finding algorithms options
+maze_algs = ('breath first search', 'depth first search', 'wall follower')
 path_find = tk.Listbox(tab2, height=1)
 path_find.grid(column=0, row=0, sticky='nws', padx=15, pady=15)
-path_find.insert(tk.END, *('breath first search',
-                           'depth first search',
-                           'wall follower'))
+path_find.insert(tk.END, *maze_algs)
 
 # scale for the maze size
 maze_size_l = tk.Label(tab2, text='size')
-maze_size_l.grid(column=0, row=1)
+maze_size_l.grid(column=0, row=2)
 maze_size = tk.Scale(tab2, from_=5, to=60, orient=tk.HORIZONTAL)
 maze_size.set(20)
-maze_size.grid(column=1, columnspan=3, row=1, sticky='ew', padx=10)
+maze_size.grid(column=1, columnspan=3, row=2, sticky='ew', padx=10)
 
 # scale for the speed of the visualization
 maze_delay_l = tk.Label(tab2, text='delay')
-maze_delay_l.grid(column=0, row=2)
+maze_delay_l.grid(column=0, row=3)
 maze_delay = tk.Scale(tab2, from_=0, to=4, orient=tk.HORIZONTAL)
 maze_delay.set(2)
-maze_delay.grid(column=1, columnspan=3, row=2, sticky='sew', padx=10, pady=5)
+maze_delay.grid(column=1, columnspan=3, row=3, sticky='sew', padx=10, pady=5)
 
 # table for the history of runs of the path finding algorithms
 m_tree_columns = ('Time', 'Algorithm', 'maze size', 'cells scanned')
@@ -160,6 +179,20 @@ v_maze_button = tk.Button(tab2, text='Visualize', command=v_maze, width=20)
 v_maze_button.grid(column=1, row=4, pady=10)
 clear_maze_h = tk.Button(tab2, text='Clear history', command=clear_maze_table, width=20)
 clear_maze_h.grid(column=0, row=4, pady=10, padx=15)
+
+
+combobox_m = ttk.Combobox(tab2, width=15, value=['All', *maze_algs])
+combobox_m.grid(column=1, row=1, pady=20)
+combobox_m.set('All')
+combobox_m_button = tk.Button(tab2, text='Filter history', width=20, command=filter_maze)
+combobox_m_button.grid(column=1, row=1, sticky='e')
+
+
+combobox_s = ttk.Combobox(tab1, width=15, value=['All', *sorting_alg])
+combobox_s.grid(column=1, row=1, pady=20)
+combobox_s.set('All')
+combobox_s_button = tk.Button(tab1, text='Filter history', width=20, command=filter_sort)
+combobox_s_button.grid(column=1, row=1, sticky='e')
 
 
 tk.mainloop()
