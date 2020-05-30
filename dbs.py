@@ -68,3 +68,17 @@ def clear_sort():
     connection = engine.connect()
     connection.execute(sorting.delete())
     connection.close()
+
+
+# select maze algorithm
+def filter_maze(alg):
+    connection = engine.connect()
+    result = connection.execute(path_finding.select(whereclause=(path_finding.c.algorithm == alg)))
+    return result
+
+
+# select sorting algorithm
+def filter_sort(alg):
+    connection = engine.connect()
+    result = connection.execute(sorting.select(whereclause=(sorting.c.algorithm == alg)))
+    return result
