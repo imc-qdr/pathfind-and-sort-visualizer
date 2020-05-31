@@ -59,6 +59,7 @@ def filter_maze():
     for i in result:
         m_tree.insert('', 'end', values=tuple(i))
 
+
 def filter_sort():
     if combobox_s.get() == 'All':
         result = dbs.get_sort()
@@ -69,12 +70,17 @@ def filter_sort():
         s_tree.insert('', 'end', values=tuple(i))
 
 
+def on_closing():
+    dbs.connection.close()
+    root.destroy()
 
 # tkinter root window, title, and size.
 root = tk.Tk()
 root.title('algorithm visualizer')
 root.geometry('700x500')
 root.resizable(0, 0)
+# closes the connection with the databases. the connection is made in the dbs file
+root.protocol("WM_DELETE_WINDOW", on_closing)
 
 # notebook holds different frames and displays them as tabs
 tabs = ttk.Notebook(root)
